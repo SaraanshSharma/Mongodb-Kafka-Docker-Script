@@ -1,0 +1,26 @@
+{
+  "name": "mongodb-sink-connector",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "connection.uri": "mongodb+srv://?retryWrites=true&w=majority",
+    "database": "test",
+    "collection": "cameras",
+    "topics": "mongodb.sentinel.cameras",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInKeyStrategy",
+    "key.projection.type": "none",
+    "key.projection.list": "",
+    "value.projection.type": "none",
+    "value.projection.list": "",
+    "field.renamer.mapping": "",
+    "write.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.ReplaceOneDefaultStrategy",
+    "max.num.retries": 3,
+    "retries.defer.timeout": 5000,
+    "change.data.capture.handler": "com.mongodb.kafka.connect.sink.cdc.mongodb.ChangeStreamHandler",
+    "delete.on.null.values": true,
+    "errors.tolerance": "all",
+    "errors.log.enable": true,
+    "timeseries.timefield": "",
+    "timeseries.metafield": "",
+    "timeseries.granularity": ""
+  }
+}

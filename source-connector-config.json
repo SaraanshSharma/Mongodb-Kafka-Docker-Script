@@ -1,0 +1,20 @@
+{
+  "name": "mongodb-source-connector",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSourceConnector",
+    "connection.uri": "mongodb://localhost:27017",
+    "database": "sentinel",
+    "collection": "cameras",
+    "topic.prefix": "mongodb",
+    "poll.max.batch.size": 1000,
+    "poll.await.time.ms": 5000,
+    "output.format.value": "json",
+    "output.format.key": "json",
+    "pipeline": "[]",
+    "copy.existing": true,
+    "copy.existing.pipeline": "[]",
+    "copy.existing.queue.size": 16384,
+    "errors.tolerance": "all",
+    "errors.log.enable": true
+  }
+}
