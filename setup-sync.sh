@@ -1,7 +1,6 @@
 #!/bin/bash
 
 mkdir -p connect-plugins
-
 echo "Starting Kafka infrastructure..."
 docker-compose up -d
 
@@ -12,9 +11,15 @@ until $(curl --output /dev/null --silent --head --fail http://localhost:8083/con
 done
 echo "Kafka Connect is ready!"
 
+echo "Removing any existing connectors..."
+curl -X DELETE http://localhost:8083/connectors/mongodb-source-connector 2>/dev/null || true
+curl -X DELETE http://localhost:8083/connectors/mongodb-sink-connector 2>/dev/null || true
+sleep 6
+
 echo "Registering MongoDB source connector..."
 curl -X POST -H "Content-Type: application/json" --data @source-connector-config.json http://localhost:8083/connectors
 
+sleep 6
 echo "Registering MongoDB sink connector..."
 curl -X POST -H "Content-Type: application/json" --data @sink-connector-config.json http://localhost:8083/connectors
 

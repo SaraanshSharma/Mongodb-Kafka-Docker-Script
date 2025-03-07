@@ -23,6 +23,10 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     network_mode: host
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      retries: 10
   kafka-connect:
     image: confluentinc/cp-kafka-connect:latest
     container_name: kafka-connect
@@ -30,9 +34,14 @@ services:
       - 8.8.8.8
       - 1.1.1.1
     depends_on:
-      - kafka
+      kafka:
+        condition : service_healthy
     ports:
       - "8083:8083"
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      retries: 10
     environment:
       CONNECT_BOOTSTRAP_SERVERS: localhost:9092
       CONNECT_REST_PORT: 8083
