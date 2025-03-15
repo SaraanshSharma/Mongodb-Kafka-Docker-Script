@@ -9,11 +9,15 @@
     "poll.await.time.ms": 5000,
     "output.format.value": "json",
     "output.format.key": "json",
-    "pipeline": "[]",
+    "pipeline": "[{\"$match\": {\"operationType\": {\"$ne\": \"delete\"}}}]",
     "copy.existing": true,
     "copy.existing.pipeline": "[]",
     "copy.existing.queue.size": 16384,
     "errors.tolerance": "all",
-    "errors.log.enable": true
+    "errors.log.enable": true,
+    "transforms": "InsertSource",
+    "transforms.InsertSource.type": "org.apache.kafka.connect.transforms.InsertField$Value",
+    "transforms.InsertSource.static.field": "source",
+    "transforms.InsertSource.static.value": "store1"
   }
 }
