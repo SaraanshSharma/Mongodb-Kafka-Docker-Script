@@ -33,7 +33,7 @@ echo '{
     "poll.await.time.ms": 5000,
     "output.format.value": "json",
     "output.format.key": "json",
-    "pipeline": "[{\"$match\": {\"operationType\": {\"$ne\": \"delete\"}}}]",
+    "pipeline": "[{\"$addFields\": {\"fullDocument.source\": \"'$SOURCE'\"}},{\"$match\": {\"operationType\": {\"$ne\": \"delete\"}}}]",
     "copy.existing": true,
     "copy.existing.pipeline": "[]",
     "copy.existing.queue.size": 16384,
