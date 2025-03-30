@@ -17,8 +17,8 @@ Ensure the following dependencies are installed on your system:
 ## Installation
 Clone the repository and navigate to the directory:
 ```bash
-git clone https://github.com/SaraanshSharma/mongodb-kafka-sync.git
-cd mongodb-kafka-sync
+git clone https://github.com/SaraanshSharma/Mongodb-Kafka-Docker-Script.git
+cd Mongodb-Kafka-Docker-Script
 ```
 
 ## Usage
