@@ -33,6 +33,7 @@ The script will prompt for the following inputs:
 - **Source MongoDB Connection String** (e.g., `mongodb://localhost:27017`)
 - **Database Name** to watch for changes
 - **Sink MongoDB Connection String** (e.g., `mongodb://localhost:27017`)
+- **Sink Database Name** to push into
 - **Source Identifier** (e.g., `store_id` for tracking changes)
 
 ### What the Script Does

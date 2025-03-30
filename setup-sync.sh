@@ -3,6 +3,7 @@
 read -p "Enter Source MongoDB Connection String (e.g., mongodb://localhost:27017): " MONGO_URI_SOURCE
 read -p "Enter Source Database Name to Watch: " DB_NAME
 read -p "Enter Sink MongoDB Connection String (e.g., mongodb://localhost:27017): " MONGO_URI_SINK
+read -p "Enter Sink Database Name: " DB_SINK_NAME
 read -p "Enter Source Information (e.g., store_id): " SOURCE
 
 mkdir -p connect-plugins
@@ -16,18 +17,15 @@ echo 'services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
-    ports:
-      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_ADMIN_SERVER_PORT: 8081
     network_mode: host
     restart: always
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
-    ports:
-      - "9092:9092"
     depends_on:
       - zookeeper
     environment:
@@ -54,8 +52,6 @@ echo 'services:
     depends_on:
       kafka:
         condition : service_healthy
-    ports:
-      - "8083:8083"
     restart: always
     healthcheck:
       test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
@@ -120,10 +116,11 @@ echo '{
     "poll.max.batch.size": 1000,
     "poll.await.time.ms": 5000,
     "output.format.value": "json",
+    "change.stream.full.document": "updateLookup",
     "output.format.key": "json",
-    "pipeline": "[{\"$addFields\": {\"fullDocument.source\": \"'$SOURCE'\"}},{\"$match\": {\"operationType\": {\"$ne\": \"delete\"}}}]",
+    "pipeline": "[{\"$set\": {\"fullDocument.source\": \"'$SOURCE'\"}}, {\"$match\": {\"operationType\": {\"$ne\": \"delete\"}, \"ns.coll\": {\"$ne\": \"metadata\"}}}]",
     "copy.existing": true,
-    "copy.existing.pipeline": "[]",
+    "copy.existing.pipeline": "[{\"$match\": {}}]",
     "copy.existing.queue.size": 16384,
     "errors.tolerance": "all",
     "errors.log.enable": true
@@ -138,7 +135,7 @@ echo '{
   "config": {
     "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
     "connection.uri":"'$MONGO_URI_SINK'",
-    "database": "'$DB_NAME'",
+    "database": "'$DB_SINK_NAME'",
     "topics.regex": "mongodb\\.'$DB_NAME'\\..*",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
