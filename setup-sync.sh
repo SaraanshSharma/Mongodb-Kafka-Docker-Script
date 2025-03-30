@@ -7,7 +7,9 @@ read -p "Enter Source Information (e.g., store_id): " SOURCE
 
 mkdir -p connect-plugins
 sleep 1
-sudo chmod 777 connect-plugins
+sudo chown -R 1000:1000 connect-plugins
+sudo chmod -R 777 connect-plugins
+ls -la connect-plugins/
 
 sleep 1
 echo 'services:
