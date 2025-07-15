@@ -15,7 +15,7 @@ ls -la connect-plugins/
 sleep 1
 echo 'services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.4.0
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -24,7 +24,7 @@ echo 'services:
     network_mode: host
     restart: always
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
     depends_on:
       - zookeeper
@@ -44,7 +44,7 @@ echo 'services:
       interval: 10s
       retries: 10
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:latest
+    image: confluentinc/cp-kafka-connect:7.4.0
     container_name: kafka-connect
     dns:
       - 8.8.8.8
@@ -65,7 +65,7 @@ echo 'services:
       CONNECT_CONFIG_STORAGE_TOPIC: "connect-configs"
       CONNECT_OFFSET_STORAGE_TOPIC: "connect-offsets"
       CONNECT_STATUS_STORAGE_TOPIC: "connect-status"
-      CONNECT_MAX_REQUEST_SIZE: 10485760  
+      CONNECT_MAX_REQUEST_SIZE: 10485760
       CONNECT_PRODUCER_BATCH_SIZE: 65536
       CONNECT_FETCH_MIN_BYTES: 1048576
       CONNECT_FETCH_MAX_WAIT_MS: 500
@@ -87,7 +87,7 @@ echo 'services:
       - -c
       - |
         echo "Installing MongoDB connectors..."
-        confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:latest
+        confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:1.11.1
         #
         echo "Launching Kafka Connect worker..."
         /etc/confluent/docker/run
@@ -118,7 +118,7 @@ echo '{
     "output.format.value": "json",
     "change.stream.full.document": "updateLookup",
     "output.format.key": "json",
-    "pipeline": "[{\"$set\": {\"fullDocument.source\": \"'$SOURCE'\"}}, {\"$match\": {\"operationType\": {\"$ne\": \"delete\"}, \"ns.coll\": {\"$ne\": \"metadata\"}}}]",
+    "pipeline": "[{\"$set\": {\"fullDocument.source\": \"'$SOURCE'\"}}, {\"$match\": {\"operationType\": {\"$ne\": \"delete\"}, \"ns.coll\": {\"$nin\": [\"metadata\", \"track_id_records\"]}}}]",
     "copy.existing": true,
     "copy.existing.pipeline": "[{\"$match\": {}}]",
     "copy.existing.queue.size": 16384,
